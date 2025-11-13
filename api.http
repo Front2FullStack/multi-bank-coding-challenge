@@ -11,5 +11,10 @@ GET http://localhost:3005/api/tickers/BTC-USD
 
 
 ####
+
+GET http://localhost:3005/api/tickers/BTC-USD/history?days=eee
+
+
+####
 # No route check 
 GET http://localhost:3005/api/dafsd

@@ -3,7 +3,8 @@ import {
   ITickerRepository,
   IPriceSimulator,
   Ticker as ITicker,
-} from "../types";
+  HistoricalData,
+} from "@/core/types";
 
 export class MarketDataService implements IMarketDataService {
   constructor(
@@ -27,6 +28,16 @@ export class MarketDataService implements IMarketDataService {
         this.repository.update(updatedTicker);
       });
     });
+  }
+
+  async getHistoricalData(
+    symbol: string,
+    days: number
+  ): Promise<HistoricalData[]> {
+    const ticker = await this.getTicker(symbol);
+    if (!ticker) throw new Error(`Ticker ${symbol} not found`);
+
+    return this.priceSimulator.generateHistoricalData(ticker, days);
   }
 
   stopSimulation(): void {

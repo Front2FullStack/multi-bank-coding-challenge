@@ -12,12 +12,14 @@ export interface Ticker {
   lastUpdate: Date;
 }
 
-export interface MarketQuote {
-  symbol: string;
-  bid: number;
-  ask: number;
-  spread: number;
+export interface HistoricalData {
   timestamp: Date;
+  price: number;
+  volume: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
 }
 
 // Service Interfaces
@@ -32,11 +34,13 @@ export interface IPriceSimulator {
   start(ticker: Ticker, callback: (ticker: Ticker) => void): void;
   stop(symbol: string): void;
   stopAll(): void;
+  generateHistoricalData(ticker: Ticker, days: number): HistoricalData[];
 }
 
 export interface IMarketDataService {
   getAllTickers(): Promise<Ticker[]>;
   getTicker(symbol: string): Promise<Ticker | null>;
+  getHistoricalData(symbol: string, days: number): Promise<HistoricalData[]>;
   startSimulation(): Promise<void>;
   stopSimulation(): void;
 }

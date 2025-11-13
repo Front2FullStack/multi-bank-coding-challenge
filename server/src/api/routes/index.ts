@@ -7,6 +7,7 @@ export function createRoutes(tickerController: TickerController): Router {
   // Ticker routes
   router.get("/tickers", tickerController.getAllTickers);
   router.get("/tickers/:symbol", tickerController.getTicker);
+  router.get("/tickers/:symbol/history", tickerController.getHistoricalData);
 
   return router;
 }

@@ -42,4 +42,25 @@ export class TickerController {
       next(error);
     }
   };
+
+  getHistoricalData = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { symbol } = req.params;
+      const days = parseInt(req.query.days as string) || 7;
+
+      const data = await this.marketDataService.getHistoricalData(symbol, days);
+
+      res
+        .status(200)
+        .json(
+          createSuccessResponse(data, `historical data fetched successfully`)
+        );
+    } catch (error) {
+      next(error);
+    }
+  };
 }
