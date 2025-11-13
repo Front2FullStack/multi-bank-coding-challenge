@@ -1,4 +1,4 @@
-import { TickerJSON, PriceHistoryPoint } from "@/types";
+import { TickerJSON, PriceHistoryPoint } from "@/core/types";
 
 export class Ticker {
   public symbol: string;

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { IMarketDataService, ApiResponse } from "../../core/types";
+import { IMarketDataService } from "@/core/types";
+import { createErrorResponse, createSuccessResponse } from "@/utils";
 
 export class TickerController {
   constructor(private marketDataService: IMarketDataService) {}
@@ -7,12 +8,16 @@ export class TickerController {
   getAllTickers = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const tickers = await this.marketDataService.getAllTickers();
-      const response: ApiResponse = {
-        success: true,
-        data: tickers,
-        timestamp: new Date().toISOString(),
-      };
-      res.json(response);
+
+      res.status(200).json(
+        createSuccessResponse(
+          {
+            tickers,
+            count: tickers.length,
+          },
+          "Ticker fetched successfully"
+        )
+      );
     } catch (error) {
       next(error);
     }
@@ -24,20 +29,15 @@ export class TickerController {
       const ticker = await this.marketDataService.getTicker(symbol);
 
       if (!ticker) {
-        res.status(404).json({
-          success: false,
-          error: `Ticker ${symbol} not found`,
-          timestamp: new Date().toISOString(),
-        });
-        next();
+        res.status(404).json(createErrorResponse(`Ticker ${symbol} not found`));
+        return;
       }
 
-      const response: ApiResponse = {
-        success: true,
-        data: ticker,
-        timestamp: new Date().toISOString(),
-      };
-      res.json(response);
+      res
+        .status(200)
+        .json(
+          createSuccessResponse(ticker, `Ticker ${symbol} fetched successfully`)
+        );
     } catch (error) {
       next(error);
     }

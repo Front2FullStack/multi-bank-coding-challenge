@@ -7,7 +7,7 @@ export class ErrorHandler {
     err: ServiceError,
     req: Request,
     res: Response,
-    next: NextFunction
+    _next: NextFunction
   ) => {
     logError(err, {
       method: req.method,
@@ -21,6 +21,5 @@ export class ErrorHandler {
     const message = err.message || "Internal Server Error";
 
     res.status(statusCode).json(createErrorResponse(message));
-    next();
   };
 }

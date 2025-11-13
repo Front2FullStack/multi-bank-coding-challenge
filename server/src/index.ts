@@ -66,7 +66,14 @@ async function startServer() {
 
   // Start price simulation
   const marketDataService = container.getMarketDataService();
-  await marketDataService.startSimulation();
+  try {
+    await marketDataService.startSimulation();
+    console.log("✅ Price simulation started");
+  } catch (error) {
+    console.error("❌ Failed to start price simulation:", error);
+    throw error;
+  }
+
   console.log("Price simulation started");
 
   const shutdown = (signal: string) => {
@@ -85,6 +92,7 @@ async function startServer() {
     // Force exit after 10 seconds
     setTimeout(() => {
       console.error("❌ Forced shutdown after timeout");
+      marketDataService.stopSimulation();
       process.exit(1);
     }, 10000);
   };

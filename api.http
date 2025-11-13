@@ -11,5 +11,5 @@ GET http://localhost:3005/api/tickers/BTC-USD
 
 
 ####
-
+# No route check 
 GET http://localhost:3005/api/dafsd

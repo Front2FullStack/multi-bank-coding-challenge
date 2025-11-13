@@ -1,6 +1,6 @@
 import { Ticker } from "@/models/ticker";
 import { PriceSimulator } from "@/services/priceSimulator";
-import { TickerData, TickerJSON } from "@/types";
+import { TickerData, TickerJSON } from "@/core/types";
 
 class MarketDataService {
   private tickers: Map<string, Ticker>;

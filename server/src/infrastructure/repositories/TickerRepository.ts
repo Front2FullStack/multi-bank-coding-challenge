@@ -39,6 +39,6 @@ export class TickerRepository implements ITickerRepository {
   }
 
   async update(ticker: ITicker): Promise<void> {
-    this.tickers.set(ticker.symbol, ticker);
+    return this.save(ticker);
   }
 }

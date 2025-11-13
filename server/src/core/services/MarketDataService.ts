@@ -28,4 +28,8 @@ export class MarketDataService implements IMarketDataService {
       });
     });
   }
+
+  stopSimulation(): void {
+    return this.priceSimulator.stopAll();
+  }
 }
