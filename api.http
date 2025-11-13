@@ -1,1 +1,10 @@
 GET http://localhost:3005/health
+
+####
+
+GET http://localhost:3005/api/tickers
+
+
+####
+
+GET http://localhost:3005/api/tickers/BTC-USD
