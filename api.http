@@ -8,3 +8,8 @@ GET http://localhost:3005/api/tickers
 ####
 
 GET http://localhost:3005/api/tickers/BTC-USD
+
+
+####
+
+GET http://localhost:3005/api/dafsd

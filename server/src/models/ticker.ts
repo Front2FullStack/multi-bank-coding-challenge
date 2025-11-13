@@ -38,12 +38,23 @@ export class Ticker {
     const previousPrice = this.currentPrice;
     this.currentPrice = newPrice;
     this.change = newPrice - previousPrice;
-    this.changePercent = (this.change / previousPrice) * 100;
+    this.changePercent =
+      previousPrice !== 0 ? (this.change / previousPrice) * 100 : 0;
     this.lastUpdate = new Date();
 
-    // Update 24h high/low
-    this.high24h = Math.max(this.high24h, newPrice);
-    this.low24h = Math.min(this.low24h, newPrice);
+    // In updatePrice method, after updating price history:
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const recent24h = this.priceHistory.filter(
+      (point) => point.timestamp >= twentyFourHoursAgo
+    );
+
+    if (recent24h.length > 0) {
+      this.high24h = Math.max(...recent24h.map((p) => p.price));
+      this.low24h = Math.min(...recent24h.map((p) => p.price));
+    } else {
+      this.high24h = this.currentPrice;
+      this.low24h = this.currentPrice;
+    }
 
     // Add to history (keep last 100 points)
     this.priceHistory.push({

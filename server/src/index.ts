@@ -1,40 +1,118 @@
 import "module-alias/register";
-import http from "http";
 import dotenv from "dotenv";
-import app from "./app";
+import express, { Application, Request, Response } from "express";
+import cors from "cors";
+import helmet from "helmet";
+import { Container } from "./container/Container";
+import { createRoutes } from "./api/routes";
+import { Config } from "./infrastructure/config/Config";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3005;
-const server = http.createServer(app);
+async function startServer() {
+  // Initialize dependency container
+  const container = new Container();
+  const config = Config.get();
 
-server.on("error", (error: NodeJS.ErrnoException) => {
-  if (error.code === "EADDRINUSE") {
-    console.error(`Port ${PORT} is already in use`);
-  } else {
-    console.error("Server error:", error);
-  }
+  // Create Express app
+  const app: Application = express();
+
+  // Middleware
+  app.use(helmet());
+  app.use(
+    cors({
+      origin: process.env.ALLOWED_ORIGINS?.split(",") || [
+        "http://localhost:3000",
+      ],
+      credentials: true,
+      methods: ["GET", "POST", "PUT", "DELETE"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    })
+  );
+
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  // Routes
+  const tickerController = container.getTickerController();
+  const routes = createRoutes(tickerController);
+
+  // Health check
+  app.get("/health", (_, res) => {
+    res.json({
+      status: "OK",
+      timestamp: new Date().toISOString(),
+    });
+  });
+
+  app.use("/api", routes);
+
+  // 404 handler
+  app.use((_req: Request, res: Response) => {
+    res.status(404).json({ error: "Route not found" });
+  });
+
+  // Error handling
+  const errorHandler = container.getErrorHandler();
+  app.use(errorHandler.handle);
+
+  // ========================================
+  // 6. Start HTTP Server
+  // ========================================
+  const httpServer = app.listen(config.port, () => {
+    console.log(`✅ HTTP Server running on port ${config.port}`);
+    console.log(`   Access REST API at http://localhost:${config.port}/api`);
+  });
+
+  // Start price simulation
+  const marketDataService = container.getMarketDataService();
+  await marketDataService.startSimulation();
+  console.log("Price simulation started");
+
+  const shutdown = (signal: string) => {
+    console.log(`\n⚠️  ${signal} received, shutting down gracefully...`);
+
+    // Close HTTP server
+    httpServer.close(() => {
+      console.log("🛑 HTTP server closed");
+    });
+
+    // In production, would also:
+    // - Stop price simulations
+    // - Close database connections
+    // - Save state if needed
+
+    // Force exit after 10 seconds
+    setTimeout(() => {
+      console.error("❌ Forced shutdown after timeout");
+      process.exit(1);
+    }, 10000);
+  };
+
+  // Graceful shutdown
+  // Register shutdown handlers
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
+}
+
+/**
+ * Error handler for unhandled rejections
+ */
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
   process.exit(1);
 });
 
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+/**
+ * Error handler for uncaught exceptions
+ */
+process.on("uncaughtException", (error) => {
+  console.error("❌ Uncaught Exception:", error);
+  process.exit(1);
 });
 
-// Graceful shutdown
-const gracefulShutdown = (signal: string) => {
-  console.log(`${signal} signal received: closing HTTP server`);
-  const shutdownTimeout = setTimeout(() => {
-    console.error("Forcefully shutting down after timeout");
-    process.exit(1);
-  }, 10000); // 10 second timeout
-
-  server.close(() => {
-    clearTimeout(shutdownTimeout);
-    console.log("HTTP server closed");
-    process.exit(0);
-  });
-};
-
-process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
-process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+// Start the server
+startServer().catch((error) => {
+  console.error("❌ Failed to start server:", error);
+  process.exit(1);
+});
