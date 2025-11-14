@@ -49,7 +49,7 @@ const NewsFeed = () => {
     },
     {
       title: "Energy Sector Stocks Rise on Supply Chain Improvements",
-      source: "Financial Times",
+      source: "The Guardian",
       time: "10 hours ago",
       category: "Energy",
       url: "#",

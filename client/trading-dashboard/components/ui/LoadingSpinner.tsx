@@ -10,7 +10,11 @@ export const LoadingSpinner: FC<LoadingSpinnerProps> = ({
   text,
   isDark = true,
 }) => (
-  <div className="flex flex-col items-center justify-center h-full">
+  <div
+    aria-busy="true"
+    role="status"
+    className="flex flex-col items-center justify-center h-full"
+  >
     <Loader2 className="w-8 h-8 text-blue-600 animate-spin mb-3" />
     {text && (
       <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
