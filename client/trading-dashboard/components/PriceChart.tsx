@@ -102,13 +102,18 @@ export const PriceChart: FC<PriceChartProps> = ({
       </div>
 
       {/* Chart Container */}
-      <div className="flex-grow w-full h-72 md:h-96">
+      <div className="flex-grow w-full min-w-0 h-72 md:h-96">
         {isLoading ? (
           <div className="flex justify-center items-center h-full">
             <Loader2 className="animate-spin text-blue-600 w-10 h-10" />
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer
+            minWidth={0}
+            minHeight={undefined}
+            width="100%"
+            height="100%"
+          >
             <AreaChart
               data={data}
               margin={{ top: 5, right: 20, left: -10, bottom: 5 }}
