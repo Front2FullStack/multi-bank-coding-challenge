@@ -67,13 +67,20 @@ Nextjs with Typescript, Tailwind CSS
 
 ### Data Fetching
 
-    - Using React Query (TanStack Query ) as we need to implement polling
-    - No state mangement library, using Context if needed
++`
++- Using React Query (TanStack Query) as we need to implement polling
++- No state management library, using Context if needed
++`
 
 ### Chart
 
-    - Using Recharts which is leveraging D3.js components for easy integration into React
++`
++- Using Recharts which is leveraging D3.js components for easy integration into React
++`
 
 ### Unit Test
-    - RTL (React Tesing Libary, Jest) for unit test
-    - Cypress (E2E tests)
+
++`
++- RTL (React Testing Library, Jest) for unit test
++- Cypress (E2E tests)
++`

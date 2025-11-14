@@ -38,19 +38,16 @@ export const generateMockHistory = (
   const now = Date.now();
   const interval = 60 * 60 * 1000; // 1 hour
   const points = days * 24;
-
-  let currentPrice = ticker.price;
+  // Start from a historical price and evolve forward
+  let currentPrice = ticker.price * (1 - (Math.random() * 0.1 - 0.05));
   const volatility = getVolatility(ticker.symbol);
-
-  for (let i = points; i >= 0; i--) {
-    const timestamp = new Date(now - i * interval);
+  for (let i = 0; i <= points; i++) {
+    const timestamp = new Date(now - (points - i) * interval);
     const change = (Math.random() - 0.5) * volatility;
     currentPrice = Math.max(0.01, currentPrice * (1 + change / 100));
-
     const high = currentPrice * (1 + Math.random() * 0.02);
     const low = currentPrice * (1 - Math.random() * 0.02);
     const open = currentPrice * (1 + (Math.random() - 0.5) * 0.01);
-
     data.push({
       timestamp,
       price: currentPrice,
@@ -61,5 +58,15 @@ export const generateMockHistory = (
       close: currentPrice,
     });
   }
+
+  // Ensure the last point matches the current ticker price
+  if (data.length > 0) {
+    const lastPoint = data[data.length - 1];
+    lastPoint.price = ticker.price;
+    lastPoint.close = ticker.price;
+    lastPoint.high = Math.max(lastPoint.high, ticker.price);
+    lastPoint.low = Math.min(lastPoint.low, ticker.price);
+  }
+
   return data;
 };

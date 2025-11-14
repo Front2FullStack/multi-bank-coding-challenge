@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { BarChart3, AlertCircle, Menu, X, Moon, Sun } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
@@ -9,11 +9,10 @@ import { Ticker } from "@/types";
 import { TickerDetails } from "@/components/TickerDetails";
 import { StatsGrid } from "@/components/StatsGrid";
 import { PriceChart } from "@/components/PriceChart";
-import AnimatedBanner from "@/components/AnimatedBanner";
+import { useDarkMode } from "@/hooks/userDarkMode";
 
 const TradingDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true);
 
   const {
     tickers,
@@ -26,6 +25,8 @@ const TradingDashboard = () => {
     error,
     priceStatus,
   } = useTradingData();
+
+  const { isDarkMode, setIsDarkMode } = useDarkMode();
 
   // Toggle theme and save to localStorage
   const toggleTheme = () => {

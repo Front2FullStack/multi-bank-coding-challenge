@@ -1,8 +1,18 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Trading Dashboard (Next.js)
 
-## Getting Started
+Multi-bank trading dashboard with real-time ticker data, interactive charts, and market news.
 
-First, run the development server:
+Quick start
+
+```bash
+cd client/trading-dashboard
+npm install
+```
+
+Config / Environment
+- The service uses `.env` for configuration. Please check example.env for details
+
+To run the development server:
 
 ```bash
 npm run dev
@@ -14,23 +24,16 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Testing
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Unit (Jest): `npm run test` (watch: `npm run test:watch`)
+- E2E (Cypress): start the app then `npm run cypress:open` or `npm run cypress:run`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Docker
 
-## Learn More
+- The repository root contains `docker-compose.yml` to build and run both services. Use `docker-compose up` from the root to start both client and server.
 
-To learn more about Next.js, take a look at the following resources:
+CI suggestions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Add a job that runs `npm ci` and `npm run test` for unit tests.
+- For E2E, consider a separate job that builds the app and runs Cypress in headless mode (use cypress/browsers Docker images).
