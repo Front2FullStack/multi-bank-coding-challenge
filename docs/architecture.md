@@ -31,7 +31,7 @@ Scalability: The decoupled nature of the services allows them to be scaled indep
 
 ## Server Architecture
 
-real-time-trading/
+├── server/market-trading-service/
 ├── src/
 │ ├── core/ # Business logic & domain
 │ │ ├── entities/
@@ -59,3 +59,21 @@ real-time-trading/
 ├── package.json
 ├── tsconfig.json
 └── .env
+├── client/trading-dashboard/
+
+## Client Architecture
+
+Nextjs with Typescript, Tailwind CSS
+
+### Data Fetching
+
+    - Using React Query (TanStack Query ) as we need to implement polling
+    - No state mangement library, using Context if needed
+
+### Chart
+
+    - Using Recharts which is leveraging D3.js components for easy integration into React
+
+### Unit Test
+    - RTL (React Tesing Libary, Jest) for unit test
+    - Cypress (E2E tests)
