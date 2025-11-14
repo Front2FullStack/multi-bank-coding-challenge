@@ -1,0 +1,96 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@import "tailwindcss";
+
+@theme {
+  --color-background: oklch(0.24 0.03 255);
+  --color-foreground: oklch(0.98 0.01 255);
+
+  --color-card: oklch(0.26 0.03 255);
+  --color-card-foreground: oklch(0.98 0.01 255);
+
+  --color-popover: oklch(0.26 0.03 255);
+  --color-popover-foreground: oklch(0.98 0.01 255);
+
+  --color-primary: oklch(0.65 0.2 250);
+  --color-primary-foreground: oklch(0.98 0.01 255);
+
+  --color-secondary: oklch(0.3 0.03 255);
+  --color-secondary-foreground: oklch(0.98 0.01 255);
+
+  --color-muted: oklch(0.35 0.03 255);
+  --color-muted-foreground: oklch(0.7 0.02 255);
+
+  --color-accent: oklch(0.5 0.15 150);
+  --color-accent-foreground: oklch(0.98 0.01 255);
+
+  --color-destructive: oklch(0.65 0.2 25);
+  --color-destructive-foreground: oklch(0.98 0.01 255);
+
+  --color-success: oklch(0.5 0.15 150);
+  --color-success-foreground: oklch(0.98 0.01 255);
+
+  --color-warning: oklch(0.7 0.18 70);
+  --color-warning-foreground: oklch(0.24 0.03 255);
+
+  --color-border: oklch(0.35 0.03 255);
+  --color-input: oklch(0.35 0.03 255);
+  --color-ring: oklch(0.65 0.2 250);
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.75rem;
+}
+
+/* Custom design tokens */
+:root {
+  --gradient-hero: linear-gradient(
+    135deg,
+    oklch(0.65 0.2 250) 0%,
+    oklch(0.65 0.2 200) 100%
+  );
+  --gradient-card: linear-gradient(
+    135deg,
+    oklch(0.26 0.03 255) 0%,
+    oklch(0.28 0.03 255) 100%
+  );
+
+  --shadow-glow: 0 0 40px
+    color-mix(in oklch, var(--color-primary) 20%, transparent);
+  --shadow-card: 0 8px 32px color-mix(in oklch, black 40%, transparent);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  header {
+    .nav-link {
+      @apply inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground;
+    }
+  }
+}
+
+@layer utilities {
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    display: inline-block;
+    animation: marquee 20s linear infinite;
+  }
+}
