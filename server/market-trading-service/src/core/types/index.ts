@@ -45,14 +45,6 @@ export interface IMarketDataService {
   stopSimulation(): void;
 }
 
-// API Response Types
-export interface ApiResponse<T = any> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  timestamp: string;
-}
-
 // Configuration
 export interface AppConfig {
   port: number;
@@ -86,9 +78,3 @@ export interface TickerJSON {
 }
 
 export type Interval = "hourly" | "daily" | "15min";
-
-// API Response types
-export interface TickersResponse extends ApiResponse {
-  count: number;
-  data: TickerJSON[];
-}
