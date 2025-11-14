@@ -1,18 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
 import TickerCard from "./TickerCard";
 import { Ticker } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
+import { API_BASE_URL } from "@/constants";
+import { LoadingSpinner } from "./ui/LoadingSpinner";
 
-interface Post {
-  id: number;
-  title: string;
-  body: string;
-}
-const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 async function getPosts(): Promise<Ticker[]> {
-  const res = await fetch(`${API_BASE_URL}/api/tickers`);
+  const res = await fetch(`${API_BASE_URL}/tickers`);
   if (!res.ok) {
     throw new Error("Failed to fetch posts");
   }
@@ -30,7 +25,12 @@ const TickerGrid = () => {
     refetchInterval: 1000,
   });
 
-  if (isLoading) return <div>Loading posts...</div>;
+  if (isLoading)
+    return (
+      <div className="py-16 px-4">
+        <LoadingSpinner />
+      </div>
+    );
   if (error) return notFound();
 
   return (

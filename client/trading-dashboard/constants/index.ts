@@ -2,7 +2,8 @@
 import { Ticker } from "@/types";
 
 export const API_BASE_URL =
-  `${process.env.NEXT_PUBLIC_BASE_URL}/api` || "http://localhost:3005/api";
+  `${process.env.NEXT_PUBLIC_MARKET_TRADING_URL}/api` ||
+  "http://localhost:3005/api";
 
 export const MOCK_TICKERS: Ticker[] = [
   {

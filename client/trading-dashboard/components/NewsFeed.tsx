@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import NewsCard from "./NewsCard";
-import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
 
 interface NewsItem {
   title: string;
@@ -58,17 +56,16 @@ const NewsFeed = () => {
     },
   ]);
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Simulate slight delay (optional)
+      setTimeout(() => {
+        setNews((prevNews) => [...prevNews].sort(() => Math.random() - 0.5));
+      }, 500); // optional internal visual delay
+    }, 2000); // Auto-refresh every 2 seconds
 
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
-      setNews((prevNews) => [...prevNews].sort(() => Math.random() - 0.5));
-      setIsRefreshing(false);
-    }, 1000);
-  };
-
-
+    return () => clearInterval(interval); // Clean up on unmount
+  }, []);
 
   return (
     <section className="py-16 px-4 bg-secondary/30">
@@ -82,18 +79,6 @@ const NewsFeed = () => {
               Latest updates from trusted financial sources
             </p>
           </div>
-          <Button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            variant="outline"
-            size="lg"
-            className="gap-2"
-          >
-            <RefreshCw
-              className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
-            />
-            Refresh
-          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

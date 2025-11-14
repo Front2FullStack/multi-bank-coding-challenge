@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  server:
+    build:
+      context: ./server/market-trading-service
+      dockerfile: Dockerfile
+    ports:
+      - "3005:3005"
+    environment:
+      - PORT=3005
+      - NODE_ENV=production
+      - ALLOWED_ORIGINS=http://localhost:3000
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client/trading-dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - NEXT_PUBLIC_MARKET_TRADING_URL
+    depends_on:
+      - server
+    restart: unless-stopped
