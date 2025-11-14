@@ -8,7 +8,7 @@ export interface Ticker {
   volume: number;
   high24h: number;
   low24h: number;
-  lastUpdate: Date;
+  lastUpdate: string;
 }
 
 export interface HistoricalData {

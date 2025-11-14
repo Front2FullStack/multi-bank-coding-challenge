@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NewsCard from "./NewsCard";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
@@ -67,6 +67,8 @@ const NewsFeed = () => {
       setIsRefreshing(false);
     }, 1000);
   };
+
+
 
   return (
     <section className="py-16 px-4 bg-secondary/30">
