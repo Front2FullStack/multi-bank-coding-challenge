@@ -1,14 +1,8 @@
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { ITicker } from "@/types/ticker";
+import { Ticker } from "@/types";
 
-const TickerCard = ({
-  symbol,
-  name,
-  price,
-  change,
-  changePercent,
-}: ITicker) => {
+const TickerCard = ({ symbol, name, price, change, changePercent }: Ticker) => {
   const isPositive = change >= 0;
 
   return (

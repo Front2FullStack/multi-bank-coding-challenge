@@ -2,7 +2,7 @@ import { TrendingUp, Activity, BarChart3 } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="relative overflow-hidden border-b border bg-gradient-to-br from-background via-background to-secondary py-20 px-4">
+    <section className="relative overflow-hidden border-b  bg-gradient-to-br from-background via-background to-secondary py-20 px-4">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(210_100%_56%/0.1),transparent_50%)]" />
 
       <div className="container mx-auto max-w-7xl relative z-10">

@@ -1,75 +1,37 @@
 "use client";
 import { useState, useEffect } from "react";
 import TickerCard from "./TickerCard";
-import { ITicker } from "@/types/ticker";
+import { Ticker } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import { notFound } from "next/navigation";
 
+interface Post {
+  id: number;
+  title: string;
+  body: string;
+}
+const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+async function getPosts(): Promise<Ticker[]> {
+  const res = await fetch(`${API_BASE_URL}/api/tickers`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch posts");
+  }
+
+  const {
+    data: { tickers },
+  } = await res.json();
+
+  return tickers;
+}
 const TickerGrid = () => {
-  const [tickers, setTickers] = useState<ITicker[]>([
-    {
-      symbol: "AAPL",
-      name: "Apple Inc.",
-      price: 178.45,
-      change: 2.34,
-      changePercent: 1.33,
-    },
-    {
-      symbol: "GOOGL",
-      name: "Alphabet Inc.",
-      price: 142.67,
-      change: -1.23,
-      changePercent: -0.85,
-    },
-    {
-      symbol: "MSFT",
-      name: "Microsoft Corp.",
-      price: 412.89,
-      change: 5.67,
-      changePercent: 1.39,
-    },
-    {
-      symbol: "AMZN",
-      name: "Amazon.com Inc.",
-      price: 178.23,
-      change: 3.45,
-      changePercent: 1.97,
-    },
-    {
-      symbol: "TSLA",
-      name: "Tesla Inc.",
-      price: 242.56,
-      change: -4.32,
-      changePercent: -1.75,
-    },
-    {
-      symbol: "META",
-      name: "Meta Platforms",
-      price: 485.34,
-      change: 8.91,
-      changePercent: 1.87,
-    },
-  ]);
+  const { data, isLoading, error } = useQuery<Ticker[], Error>({
+    queryKey: ["tickers"],
+    queryFn: getPosts,
+    refetchInterval: 1000,
+  });
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTickers((prevTickers) =>
-        prevTickers.map((ticker) => {
-          const randomChange = (Math.random() - 0.5) * 5;
-          const newPrice = Math.max(ticker.price + randomChange, 1);
-          const change = newPrice - ticker.price;
-          const changePercent = (change / ticker.price) * 100;
-
-          return {
-            ...ticker,
-            price: newPrice,
-            change: ticker.change + change,
-            changePercent: ticker.changePercent + changePercent,
-          };
-        })
-      );
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
+  if (isLoading) return <div>Loading posts...</div>;
+  if (error) return notFound();
 
   return (
     <section className="py-16 px-4 bg-background">
@@ -84,9 +46,11 @@ const TickerGrid = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tickers.map((ticker) => (
-            <TickerCard key={ticker.symbol} {...ticker} />
-          ))}
+          {data &&
+            data.length > 0 &&
+            data?.map((ticker) => (
+              <TickerCard key={ticker.symbol} {...ticker} />
+            ))}
         </div>
       </div>
     </section>
