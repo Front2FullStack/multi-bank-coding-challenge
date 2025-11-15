@@ -1,18 +1,23 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Ticker, HistoricalData } from "@/types";
 import { API_BASE_URL, MOCK_TICKERS } from "@/constants";
 import { generateMockHistory } from "@/lib/utils";
+import { useWebSocketContext } from "@/providers/WebSocketProvider";
 
 export const useTradingData = () => {
-  const [selectedTicker, setSelectedTicker] = useState<Ticker | null>(null);
+  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
   const [chartDays, setChartDays] = useState<number>(7);
   const [error, setError] = useState<string | null>(null);
   const priceStatus = useRef<{ [key: string]: "up" | "down" | "neutral" }>({});
   const previousTickers = useRef<Ticker[]>([]);
 
-  // Fetch tickers with automatic polling every 2 seconds for tickers
-  const { data: tickers = [], isLoading: tickersLoading } = useQuery({
+  const { tickers: wsTickers, priceStatus: wsPriceStatus } =
+    useWebSocketContext();
+
+  // REST fallback only if WS not yet providing data
+  const useFallback = !wsTickers || wsTickers.length === 0;
+  const { data: restTickers = [], isLoading: restLoading } = useQuery({
     queryKey: ["tickers"],
     queryFn: async () => {
       try {
@@ -29,12 +34,21 @@ export const useTradingData = () => {
         return MOCK_TICKERS;
       }
     },
-    refetchInterval: 2000,
+    enabled: useFallback,
+    refetchInterval: useFallback ? 2000 : false,
     staleTime: 0,
   });
 
-  // Track price changes for animations
+  const tickers: Ticker[] = useFallback ? restTickers : wsTickers;
+
+  // Track price changes for animations (fallback when WS not in use)
   useEffect(() => {
+    if (!useFallback) {
+      // When using WS, price status is provided by the provider
+      priceStatus.current = wsPriceStatus;
+      return;
+    }
+
     if (previousTickers.current.length > 0 && tickers.length > 0) {
       tickers.forEach((newTicker) => {
         const oldTicker = previousTickers.current.find(
@@ -50,14 +64,20 @@ export const useTradingData = () => {
       });
     }
     previousTickers.current = tickers;
-  }, [tickers]);
+  }, [tickers, useFallback, wsPriceStatus]);
 
-  // Set initial selected ticker
+  // Set initial selected symbol
   useEffect(() => {
-    if (!selectedTicker && tickers.length > 0) {
-      setSelectedTicker(tickers[0]);
+    if (!selectedSymbol && tickers.length > 0) {
+      setSelectedSymbol(tickers[0].symbol);
     }
-  }, [tickers, selectedTicker]);
+  }, [tickers, selectedSymbol]);
+
+  // Derive the selected ticker from the latest tickers list so it always stays fresh
+  const selectedTicker: Ticker | null = useMemo(() => {
+    if (!selectedSymbol) return null;
+    return tickers.find((t) => t.symbol === selectedSymbol) ?? null;
+  }, [tickers, selectedSymbol]);
 
   // Fetch chart data when ticker or days change
   const { data: chartData = [], isLoading: chartLoading } = useQuery({
@@ -83,11 +103,14 @@ export const useTradingData = () => {
   return {
     tickers,
     selectedTicker,
-    setSelectedTicker,
+    setSelectedTicker: (ticker: Ticker) => setSelectedSymbol(ticker.symbol),
     chartData,
     chartDays,
     setChartDays,
-    loading: { tickers: tickersLoading, chart: chartLoading },
+    loading: {
+      tickers: useFallback ? restLoading : false,
+      chart: chartLoading,
+    },
     error,
     priceStatus: priceStatus.current,
   };

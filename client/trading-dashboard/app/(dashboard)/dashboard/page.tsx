@@ -37,6 +37,8 @@ const TradingDashboard = () => {
     });
   };
 
+ 
+
   const handleSelectTicker = (ticker: Ticker) => {
     setSelectedTicker(ticker);
     setSidebarOpen(false); // Close sidebar on mobile after selection

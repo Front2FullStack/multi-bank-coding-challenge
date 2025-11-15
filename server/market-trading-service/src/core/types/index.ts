@@ -45,7 +45,7 @@ export interface IMarketDataService {
   getHistoricalData(symbol: string, days: number): Promise<HistoricalData[]>;
   startSimulation(): Promise<void>;
   stopSimulation(): void;
-  subscribeToTicker(symbol: string, callback: (ticker: Ticker) => void): void;
+  subscribeToTicker(symbol: string, callback: (ticker: Ticker) => void): string;
   unsubscribeFromTicker(symbol: string, callbackId: string): void;
 }
 
