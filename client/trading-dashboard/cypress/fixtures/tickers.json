@@ -1,0 +1,66 @@
+{
+  "data": {
+    "tickers": [
+      {
+        "symbol": "AAPL",
+        "name": "Apple Inc.",
+        "price": 185.5,
+        "previousClose": 184.0,
+        "change": 1.5,
+        "changePercent": 0.82,
+        "volume": 55000000,
+        "high24h": 186.2,
+        "low24h": 183.4,
+        "lastUpdate": "2025-11-14T15:30:00.000Z"
+      },
+      {
+        "symbol": "TSLA",
+        "name": "Tesla Inc.",
+        "price": 245.75,
+        "previousClose": 250.0,
+        "change": -4.25,
+        "changePercent": -1.7,
+        "volume": 42000000,
+        "high24h": 251.5,
+        "low24h": 244.0,
+        "lastUpdate": "2025-11-14T15:30:00.000Z"
+      },
+      {
+        "symbol": "GOOGL",
+        "name": "Alphabet Inc.",
+        "price": 140.25,
+        "previousClose": 139.5,
+        "change": 0.75,
+        "changePercent": 0.54,
+        "volume": 28000000,
+        "high24h": 141.0,
+        "low24h": 138.8,
+        "lastUpdate": "2025-11-14T15:30:00.000Z"
+      },
+      {
+        "symbol": "MSFT",
+        "name": "Microsoft Corp.",
+        "price": 380.9,
+        "previousClose": 378.25,
+        "change": 2.65,
+        "changePercent": 0.7,
+        "volume": 31000000,
+        "high24h": 382.5,
+        "low24h": 377.0,
+        "lastUpdate": "2025-11-14T15:30:00.000Z"
+      },
+      {
+        "symbol": "BTC-USD",
+        "name": "Bitcoin USD",
+        "price": 43250.5,
+        "previousClose": 42000.0,
+        "change": 1250.5,
+        "changePercent": 2.98,
+        "volume": 15000000,
+        "high24h": 43500.0,
+        "low24h": 41800.0,
+        "lastUpdate": "2025-11-14T15:30:00.000Z"
+      }
+    ]
+  }
+}

@@ -3,7 +3,7 @@ import TickerCard from "./TickerCard";
 import { Ticker } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import { API_BASE_URL } from "@/constants";
+import { API_BASE_URL, MOCK_TICKERS } from "@/constants";
 import { LoadingSpinner } from "./ui/LoadingSpinner";
 
 async function getPosts(): Promise<Ticker[]> {
@@ -23,6 +23,7 @@ const TickerGrid = () => {
     queryKey: ["tickers"],
     queryFn: getPosts,
     refetchInterval: 1000,
+    placeholderData: MOCK_TICKERS,
   });
 
   if (isLoading)
@@ -31,8 +32,7 @@ const TickerGrid = () => {
         <LoadingSpinner />
       </div>
     );
-  if (error) return notFound();
-
+  if (error) return null;
   return (
     <section className="py-16 px-4 bg-background">
       <div className="container mx-auto max-w-7xl">
@@ -45,7 +45,7 @@ const TickerGrid = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div data-testid="ticker-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data &&
             data.length > 0 &&
             data?.map((ticker) => (

@@ -62,7 +62,7 @@ const NewsFeed = () => {
       setTimeout(() => {
         setNews((prevNews) => [...prevNews].sort(() => Math.random() - 0.5));
       }, 500); // optional internal visual delay
-    }, 2000); // Auto-refresh every 2 seconds
+    }, 5000); // Auto-refresh every 5 seconds
 
     return () => clearInterval(interval); // Clean up on unmount
   }, []);
