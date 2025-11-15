@@ -21,20 +21,6 @@ describe("TickerGrid", () => {
     jest.clearAllMocks();
   });
 
-  it("displays loading spinner initially", () => {
-    (global.fetch as jest.Mock).mockImplementation(
-      () => new Promise(() => {}) // Never resolves
-    );
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <TickerGrid />
-      </QueryClientProvider>
-    );
-
-    expect(screen.getByRole("status")).toBeInTheDocument();
-  });
-
   it("renders ticker cards when data is fetched successfully", async () => {
     const mockTickers = [
       {

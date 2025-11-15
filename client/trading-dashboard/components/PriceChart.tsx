@@ -12,7 +12,7 @@ import { Loader2 } from "lucide-react";
 import { HistoricalData } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 import { TIME_FRAMES } from "@/constants";
-import { CustomTooltip } from "@/components/ui/CutomTooltip";
+import { CustomTooltip } from "@/components/ui/CustomTooltip";
 
 interface PriceChartProps {
   data: HistoricalData[];
