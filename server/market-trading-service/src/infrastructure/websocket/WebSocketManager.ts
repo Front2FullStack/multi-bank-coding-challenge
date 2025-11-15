@@ -5,6 +5,8 @@ export class WebSocketManager {
   private wss: WebSocketServer;
   private clients: Map<string, WSClient> = new Map();
   private marketDataService: IMarketDataService;
+  // Track callback IDs so we can properly unsubscribe and avoid memory leaks per client
+  private subscriptionIds: Map<string, Map<string, string>> = new Map();
 
   constructor(port: number, marketDataService: IMarketDataService) {
     this.marketDataService = marketDataService;
@@ -106,16 +108,25 @@ export class WebSocketManager {
         );
 
         // Subscribe to updates
-        this.marketDataService.subscribeToTicker(symbol, (updatedTicker) => {
-          if (client.subscriptions.has(updatedTicker.symbol)) {
-            client.ws.send(
-              JSON.stringify({
-                type: "data",
-                payload: { ticker: updatedTicker },
-              })
-            );
+        const callbackId = this.marketDataService.subscribeToTicker(
+          symbol,
+          (updatedTicker) => {
+            if (client.subscriptions.has(updatedTicker.symbol)) {
+              client.ws.send(
+                JSON.stringify({
+                  type: "data",
+                  payload: { ticker: updatedTicker },
+                })
+              );
+            }
           }
-        });
+        );
+        if (!this.subscriptionIds.has(client.id)) {
+          this.subscriptionIds.set(client.id, new Map());
+        }
+        this.subscriptionIds
+          .get(client.id)!
+          .set(symbol.toUpperCase(), callbackId);
       }
     }
 
@@ -130,6 +141,13 @@ export class WebSocketManager {
   private handleUnsubscribe(client: WSClient, symbols: string[]): void {
     symbols.forEach((symbol) => {
       client.subscriptions.delete(symbol.toUpperCase());
+      const perClient = this.subscriptionIds.get(client.id);
+      const upper = symbol.toUpperCase();
+      if (perClient && perClient.has(upper)) {
+        const callbackId = perClient.get(upper)!;
+        this.marketDataService.unsubscribeFromTicker(upper, callbackId);
+        perClient.delete(upper);
+      }
     });
 
     client.ws.send(
@@ -142,6 +160,14 @@ export class WebSocketManager {
 
   private handleDisconnect(clientId: string): void {
     console.log(`Client disconnected: ${clientId}`);
+    // Clean up any active subscriptions for this client
+    const perClient = this.subscriptionIds.get(clientId);
+    if (perClient) {
+      perClient.forEach((callbackId, symbol) => {
+        this.marketDataService.unsubscribeFromTicker(symbol, callbackId);
+      });
+      this.subscriptionIds.delete(clientId);
+    }
     this.clients.delete(clientId);
   }
 

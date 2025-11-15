@@ -27,7 +27,10 @@ export class MarketDataService implements IMarketDataService {
 
     tickers.forEach((ticker) => {
       this.priceSimulator.start(ticker, (updatedTicker) => {
+        // Persist updated ticker state
         this.repository.update(updatedTicker);
+        // Notify any active subscribers (e.g., WebSocket clients) so they receive real-time updates
+        this.notifySubscribers(updatedTicker);
       });
     });
   }

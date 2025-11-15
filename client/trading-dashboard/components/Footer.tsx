@@ -1,5 +1,3 @@
-import { BarChart3 } from "lucide-react";
-
 const Footer = () => {
   const year = new Date().getFullYear();
   return (
