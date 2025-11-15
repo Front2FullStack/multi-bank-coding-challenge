@@ -3,7 +3,6 @@ import TickerCard from "./TickerCard";
 import { Ticker } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { API_BASE_URL, MOCK_TICKERS } from "@/constants";
-import { LoadingSpinner } from "./ui/LoadingSpinner";
 import { useWebSocketContext } from "@/providers/WebSocketProvider";
 
 async function getPosts(): Promise<Ticker[]> {

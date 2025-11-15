@@ -23,6 +23,20 @@ This will start:
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:3005 (health endpoint: `/health`)
 
+Local development with Docker (hot reload)
+
+Use the development compose file to run both services with live reload and all required env vars configured:
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+This will start:
+
+- Frontend (dev server): http://localhost:3000
+- Backend API (dev): http://localhost:3005
+- WebSocket (dev): ws://localhost:8080
+
 Local development (without Docker)
 
 - Frontend:
@@ -61,6 +75,10 @@ Tests
 
 - Contracts: WebSocket message shapes are minimal and stable: `{"type":"connected","payload":{"clientId"}}` and `{"type":"data","payload":{"ticker"}}`. REST endpoints are reachable for initial bootstrap/fallback.
 
+- CI/CD via github actions to run test on PR
+
+- Used Code Rabbit to review 
+
 ### Trade-offs
 
 - Real-time delivery vs simplicity: WebSocket for live updates plus a one-time REST bootstrap for fast first paint (slight duplication accepted for responsiveness).
@@ -80,6 +98,7 @@ Tests
 - Testing: REST fallback and provider no-op defaults keep unit tests stable; deep WS integration tests are limited and can be added with a small WS mock.
 
 - Selection model: selection tracked by symbol and derived from the latest ticker list to ensure live updates without stale references.
+
 - Some of the Bonus features aren't covered due to time constrain. 
 
 License

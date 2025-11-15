@@ -1,10 +1,18 @@
 // All constants
 import { Ticker } from "@/types";
 
-export const API_BASE_URL =
-  `${process.env.NEXT_PUBLIC_MARKET_TRADING_URL}/api` ||
-  "http://localhost:3005/api";
-export const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8080";
+// Ensure sane defaults even when env vars are missing at build time
+const PUBLIC_API_BASE =
+  process.env.NEXT_PUBLIC_MARKET_TRADING_URL &&
+  process.env.NEXT_PUBLIC_MARKET_TRADING_URL.trim() !== ""
+    ? process.env.NEXT_PUBLIC_MARKET_TRADING_URL
+    : "http://localhost:3005";
+export const API_BASE_URL = `${PUBLIC_API_BASE}/api`;
+
+export const WS_URL =
+  process.env.NEXT_PUBLIC_WS_URL && process.env.NEXT_PUBLIC_WS_URL.trim() !== ""
+    ? process.env.NEXT_PUBLIC_WS_URL
+    : "ws://localhost:8080";
 
 export const MOCK_TICKERS: Ticker[] = [
   {
