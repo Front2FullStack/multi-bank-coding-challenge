@@ -1,13 +1,14 @@
-import { TickerRepository } from "../infrastructure/repositories/TickerRepository";
-import { PriceSimulator } from "../core/services/PriceSimulator";
-import { MarketDataService } from "../core/services/MarketDataService";
-import { TickerController } from "../api/controllers/TickerController";
-import { ErrorHandler } from "../api/middleware/ErrorHandler";
+import { TickerRepository } from "@/infrastructure/repositories/TickerRepository";
+import { PriceSimulator } from "@/core/services/PriceSimulator";
+import { MarketDataService } from "@/core/services/MarketDataService";
+import { TickerController } from "@/api/controllers/TickerController";
+import { ErrorHandler } from "@/api/middleware/ErrorHandler";
 import {
   ITickerRepository,
   IPriceSimulator,
   IMarketDataService,
-} from "../core/types";
+} from "@/core/types";
+import { WebSocketManager } from "@/infrastructure/websocket/WebSocketManager";
 
 export class Container {
   private services: Map<string, any> = new Map();
@@ -60,5 +61,9 @@ export class Container {
 
   getErrorHandler(): ErrorHandler {
     return this.get("ErrorHandler");
+  }
+
+  createWebSocketManager(port: number): WebSocketManager {
+    return new WebSocketManager(port, this.getMarketDataService());
   }
 }

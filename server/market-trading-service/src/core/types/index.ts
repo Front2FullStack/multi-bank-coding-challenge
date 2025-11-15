@@ -1,3 +1,5 @@
+// WebSocket Types
+import type { WebSocket as WsWebSocket } from "ws";
 // Domain Types
 export interface Ticker {
   symbol: string;
@@ -43,12 +45,16 @@ export interface IMarketDataService {
   getHistoricalData(symbol: string, days: number): Promise<HistoricalData[]>;
   startSimulation(): Promise<void>;
   stopSimulation(): void;
+  subscribeToTicker(symbol: string, callback: (ticker: Ticker) => void): string;
+  unsubscribeFromTicker(symbol: string, callbackId: string): void;
 }
 
 // Configuration
 export interface AppConfig {
   port: number;
   env: string;
+  priceUpdateInterval: number;
+  wsPort: number;
 }
 
 // Ticker related types
@@ -78,3 +84,15 @@ export interface TickerJSON {
 }
 
 export type Interval = "hourly" | "daily" | "15min";
+
+export interface WSMessage {
+  type: "subscribe" | "unsubscribe" | "ping" | "pong" | "error" | "data";
+  payload?: any;
+}
+
+export interface WSClient {
+  id: string;
+  ws: WsWebSocket;
+  subscriptions: Set<string>;
+  isAlive: boolean;
+}

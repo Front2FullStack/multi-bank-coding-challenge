@@ -10,7 +10,7 @@ graph LR
     end
 
     subgraph Server
-        Backend["<strong>Node.js Backend</strong><br/>localhost:8080"]
+        Backend["<strong>Node.js Backend</strong><br/>localhost:3005"]
         DataSource["(Simulated Data Source)"]
     end
 
@@ -30,7 +30,7 @@ Clean Code: Code is organized into logical modules with clear responsibilities. 
 Scalability: The decoupled nature of the services allows them to be scaled independently. The use of WebSockets provides an efficient, low-latency communication channel for real-time data.
 
 ## Server Architecture
-
+```
 ├── server/market-trading-service/
 ├── src/
 │ ├── core/ # Business logic & domain
@@ -60,23 +60,19 @@ Scalability: The decoupled nature of the services allows them to be scaled indep
 ├── tsconfig.json
 └── .env
 ├── client/trading-dashboard/
-
+```
 ## Client Architecture
 
 Nextjs with Typescript, Tailwind CSS
 
 ### Data Fetching
 
-+`
-+- Using React Query (TanStack Query) as we need to implement polling
-+- No state management library, using Context if needed
-+`
+- Using React Query (TanStack Query) as we need to implement polling
+- No state management library, using Context if needed
 
 ### Chart
 
-+`
-+- Using Recharts which is leveraging D3.js components for easy integration into React
-+`
+- Using Recharts which is leveraging D3.js components for easy integration into React
 
 ### Unit Test
 

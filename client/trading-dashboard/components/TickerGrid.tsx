@@ -3,7 +3,7 @@ import TickerCard from "./TickerCard";
 import { Ticker } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { API_BASE_URL, MOCK_TICKERS } from "@/constants";
-import { LoadingSpinner } from "./ui/LoadingSpinner";
+import { useWebSocketContext } from "@/providers/WebSocketProvider";
 
 async function getPosts(): Promise<Ticker[]> {
   const res = await fetch(`${API_BASE_URL}/tickers`);
@@ -18,14 +18,21 @@ async function getPosts(): Promise<Ticker[]> {
   return tickers;
 }
 const TickerGrid = () => {
+  const { tickers: wsTickers } = useWebSocketContext();
+  const useFallback = !wsTickers || wsTickers.length === 0;
   const { data, error } = useQuery<Ticker[], Error>({
     queryKey: ["tickers"],
     queryFn: getPosts,
-    refetchInterval: 1000,
+    refetchInterval: useFallback ? 1000 : false,
     placeholderData: MOCK_TICKERS,
+    enabled: useFallback,
   });
 
-  if (error) {
+  const tickersToShow: Ticker[] = useFallback
+    ? data ?? MOCK_TICKERS
+    : wsTickers;
+
+  if (error && useFallback) {
     console.error("Error fetching tickers:", error);
   }
 
@@ -45,9 +52,9 @@ const TickerGrid = () => {
           data-testid="ticker-grid"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {data &&
-            data.length > 0 &&
-            data?.map((ticker) => (
+          {tickersToShow &&
+            tickersToShow.length > 0 &&
+            tickersToShow.map((ticker) => (
               <TickerCard key={ticker.symbol} {...ticker} />
             ))}
         </div>
