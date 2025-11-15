@@ -7,6 +7,8 @@ import {
 } from "@/core/types";
 
 export class MarketDataService implements IMarketDataService {
+  private subscribers: Map<string, Map<string, (ticker: ITicker) => void>> =
+    new Map();
   constructor(
     private repository: ITickerRepository,
     private priceSimulator: IPriceSimulator
@@ -38,6 +40,39 @@ export class MarketDataService implements IMarketDataService {
     if (!ticker) throw new Error(`Ticker ${symbol} not found`);
 
     return this.priceSimulator.generateHistoricalData(ticker, days);
+  }
+
+  subscribeToTicker(
+    symbol: string,
+    callback: (ticker: ITicker) => void
+  ): string {
+    symbol = symbol.toUpperCase();
+
+    if (!this.subscribers.has(symbol)) {
+      this.subscribers.set(symbol, new Map());
+    }
+
+    const callbackId = Math.random().toString(36).substring(7);
+    this.subscribers.get(symbol)!.set(callbackId, callback);
+
+    return callbackId;
+  }
+
+  unsubscribeFromTicker(symbol: string, callbackId: string): void {
+    const callbacks = this.subscribers.get(symbol.toUpperCase());
+    if (callbacks) {
+      callbacks.delete(callbackId);
+      if (callbacks.size === 0) {
+        this.subscribers.delete(symbol);
+      }
+    }
+  }
+
+  notifySubscribers(ticker: ITicker): void {
+    const callbacks = this.subscribers.get(ticker.symbol);
+    if (callbacks) {
+      callbacks.forEach((callback) => callback(ticker));
+    }
   }
 
   stopSimulation(): void {

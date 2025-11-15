@@ -80,7 +80,9 @@ async function startServer() {
     throw error;
   }
 
-  console.log("Price simulation started");
+  // Start WebSocket server
+  container.createWebSocketManager(config.wsPort);
+  console.log(`WebSocket Server running on port ${config.wsPort}`);
 
   const shutdown = (signal: string) => {
     console.log(`\n⚠️  ${signal} received, shutting down gracefully...`);
