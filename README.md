@@ -44,12 +44,8 @@ npm run dev
 Tests
 
 - Frontend unit tests: run in `client/trading-dashboard` with `npm run test` (Jest)
-- Frontend E2E: run Cypress after starting the frontend (see `client/trading-dashboard/cypress.config.ts`)
-
-Notes
-
-- Each subproject includes its own README with more detailed developer and testing instructions. If you plan to contribute, please follow the subproject README before opening a PR.
-- If you want CI/CD integration, I can add GitHub Actions workflows that run unit tests and optional Cypress E2E tests.
+- Frontend E2E: run Cypress after starting the frontend with `npm run cypress:open` for local `npm run cypress:run` for CI/CD pipelines
+- Backend unit test run in `server/market-trading-service` with `npm run test` (Jest), `npm run test:watch`, `npm run test:coverage` also available if working on test and see the coverage
 
 License
 

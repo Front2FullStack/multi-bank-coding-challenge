@@ -22,12 +22,21 @@ npm run build
 npm start
 ```
 
+Test
+
+```bash
+npm run test
+npm run test:watch       //for developer working on test files
+npm run test:coverage   // To see the  code coverage report
+```
+
 Config / Environment
 
 - The service uses `.env` for configuration. Main variables:
   - PORT (default: 3005)
   - NODE_ENV (development|production)
   - ALLOWED_ORIGINS (comma-separated CORS origins for the frontend)
+  - see `example.env`
 
 Endpoints
 
