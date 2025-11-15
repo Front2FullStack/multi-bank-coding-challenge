@@ -6,7 +6,10 @@ const TickerCard = ({ symbol, name, price, change, changePercent }: Ticker) => {
   const isPositive = change >= 0;
 
   return (
-    <Card className="p-6 hover:shadow-lg transition-all duration-300 hover:border-primary/50 bg-gradient-to-br from-card to-card/80">
+    <Card
+      data-testid={`ticker-card-${symbol}`}
+      className="p-6 hover:shadow-lg transition-all duration-300 hover:border-primary/50 bg-gradient-to-br from-card to-card/80"
+    >
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-2xl font-bold text-foreground">{symbol}</h3>
@@ -24,6 +27,7 @@ const TickerCard = ({ symbol, name, price, change, changePercent }: Ticker) => {
           ${price.toFixed(2)}
         </div>
         <div
+          data-testid={`ticker-change-${symbol}`}
           className={`flex items-center gap-2 text-sm font-medium ${
             isPositive ? "text-success" : "text-destructive"
           }`}

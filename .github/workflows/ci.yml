@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, feature/*]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  server-tests:
+    name: Server tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server/market-trading-service
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Cache server node modules
+        uses: actions/cache@v4
+        with:
+          path: server/market-trading-service/node_modules
+          key: ${{ runner.os }}-server-${{ hashFiles('server/market-trading-service/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-server-
+
+      - name: Install server dependencies
+        run: npm ci
+
+      - name: Run server tests
+        run: npm test --silent
+
+  client-tests:
+    name: Client tests (conditional)
+    runs-on: ubuntu-latest
+    needs: server-tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect client test script
+        id: detect_client_tests
+        run: |
+          set -e
+          PKG=client/trading-dashboard/package.json
+          if [ -f "$PKG" ] && grep -q '"test"' "$PKG"; then
+            echo "has_tests=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_tests=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Use Node.js 20
+        if: steps.detect_client_tests.outputs.has_tests == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Cache client node modules
+        if: steps.detect_client_tests.outputs.has_tests == 'true'
+        uses: actions/cache@v4
+        with:
+          path: client/trading-dashboard/node_modules
+          key: ${{ runner.os }}-client-${{ hashFiles('client/trading-dashboard/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-client-
+
+      - name: Install client dependencies
+        if: steps.detect_client_tests.outputs.has_tests == 'true'
+        run: |
+          cd client/trading-dashboard
+          npm ci
+
+      - name: Run client tests
+        if: steps.detect_client_tests.outputs.has_tests == 'true'
+        run: |
+          cd client/trading-dashboard
+          npm test --silent

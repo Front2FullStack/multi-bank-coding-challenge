@@ -1,0 +1,44 @@
+name: E2E (Cypress)
+
+on:
+  push:
+    branches: [main, master, feature/*]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Start client & run Cypress (no backend)
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: client/trading-dashboard
+          build: npm run build
+          start: npm start
+          wait-on: "http://localhost:3000"
+          wait-on-timeout: 120
+          browser: chrome
+          spec: cypress/e2e/**/*.cy.ts
+        env:
+          # Point to an unreachable host so fetch fails and client falls back to MOCK_TICKERS
+          NEXT_PUBLIC_MARKET_TRADING_URL: http://127.0.0.1:59999
+          CYPRESS_BASE_URL: http://localhost:3000
+
+      - name: Upload Cypress videos/screenshots (if failed)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-artifacts
+          path: |
+            client/trading-dashboard/cypress/videos/**
+            client/trading-dashboard/cypress/screenshots/**

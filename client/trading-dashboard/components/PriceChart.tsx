@@ -12,6 +12,7 @@ import { Loader2 } from "lucide-react";
 import { HistoricalData } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 import { TIME_FRAMES } from "@/constants";
+import { CustomTooltip } from "@/components/ui/CustomTooltip";
 
 interface PriceChartProps {
   data: HistoricalData[];
@@ -20,38 +21,6 @@ interface PriceChartProps {
   onChartDaysChange: (days: number) => void;
   isDarkMode: boolean;
 }
-
-const CustomTooltip: FC<any> = ({ active, payload, label, isDark }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div
-        className={`${
-          isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-        } border rounded-lg shadow-lg p-3`}
-      >
-        <p
-          className={`text-xs ${
-            isDark ? "text-gray-400" : "text-gray-500"
-          } mb-1`}
-        >
-          {new Date(label).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </p>
-        <p
-          className={`text-lg font-semibold ${
-            isDark ? "text-white" : "text-gray-900"
-          }`}
-        >
-          {formatCurrency(payload[0].value)}
-        </p>
-      </div>
-    );
-  }
-  return null;
-};
 
 export const PriceChart: FC<PriceChartProps> = ({
   data,
@@ -102,13 +71,18 @@ export const PriceChart: FC<PriceChartProps> = ({
       </div>
 
       {/* Chart Container */}
-      <div className="flex-grow w-full h-72 md:h-96">
+      <div className="flex-grow w-full min-w-0 h-72 md:h-96">
         {isLoading ? (
           <div className="flex justify-center items-center h-full">
             <Loader2 className="animate-spin text-blue-600 w-10 h-10" />
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer
+            minWidth={0}
+            minHeight={undefined}
+            width="100%"
+            height="100%"
+          >
             <AreaChart
               data={data}
               margin={{ top: 5, right: 20, left: -10, bottom: 5 }}
@@ -147,7 +121,7 @@ export const PriceChart: FC<PriceChartProps> = ({
                 axisLine={false}
                 tickLine={false}
               />
-              <Tooltip content={<CustomTooltip isDark={isDarkMode} />} />
+              <Tooltip content={<CustomTooltip />} />
               <Area
                 type="monotone"
                 dataKey="price"

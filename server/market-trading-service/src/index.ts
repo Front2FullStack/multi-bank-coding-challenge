@@ -1,4 +1,10 @@
-import "module-alias/register";
+import path from "path";
+import moduleAlias from "module-alias";
+
+// Register a runtime alias so imports using `@/...` resolve to the
+// current directory (works when running TS in `src/` and when running
+// compiled JS from `dist/`).
+moduleAlias.addAlias("@", path.resolve(__dirname));
 import dotenv from "dotenv";
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
@@ -6,6 +12,7 @@ import helmet from "helmet";
 import { Container } from "./container/Container";
 import { createRoutes } from "./api/routes";
 import { Config } from "./infrastructure/config/Config";
+import { createSuccessResponse } from "./utils";
 
 dotenv.config();
 
@@ -39,10 +46,9 @@ async function startServer() {
 
   // Health check
   app.get("/health", (_, res) => {
-    res.json({
-      status: "OK",
-      timestamp: new Date().toISOString(),
-    });
+    res
+      .status(200)
+      .json(createSuccessResponse("Running", `API health is fine`));
   });
 
   app.use("/api", routes);

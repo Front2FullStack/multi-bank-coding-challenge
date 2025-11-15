@@ -49,7 +49,7 @@ const NewsFeed = () => {
     },
     {
       title: "Energy Sector Stocks Rise on Supply Chain Improvements",
-      source: "Financial Times",
+      source: "The Guardian",
       time: "10 hours ago",
       category: "Energy",
       url: "#",
@@ -62,7 +62,7 @@ const NewsFeed = () => {
       setTimeout(() => {
         setNews((prevNews) => [...prevNews].sort(() => Math.random() - 0.5));
       }, 500); // optional internal visual delay
-    }, 2000); // Auto-refresh every 2 seconds
+    }, 5000); // Auto-refresh every 5 seconds
 
     return () => clearInterval(interval); // Clean up on unmount
   }, []);
