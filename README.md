@@ -71,13 +71,13 @@ Tests
 
 - Environment: single-node backend with in-memory storage is acceptable for this challenge; no cross-process persistence required.
 
-- Client: no auth is required to view market data. 
+- Client: no auth is required to view market data.
 
 - Contracts: WebSocket message shapes are minimal and stable: `{"type":"connected","payload":{"clientId"}}` and `{"type":"data","payload":{"ticker"}}`. REST endpoints are reachable for initial bootstrap/fallback.
 
 - CI/CD via github actions to run test on PR
 
-- Used Code Rabbit to review 
+- Used Code Rabbit to review
 
 ### Trade-offs
 
@@ -99,7 +99,7 @@ Tests
 
 - Selection model: selection tracked by symbol and derived from the latest ticker list to ensure live updates without stale references.
 
-- Some of the Bonus features aren't covered due to time constrain. 
+- Some of the Bonus features aren't covered due to time constrain.
 
 License
 
